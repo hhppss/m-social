@@ -75,7 +75,7 @@ function wp_bootstrap_starter_setup() {
 }
 endif;
 add_action( 'after_setup_theme', 'wp_bootstrap_starter_setup' );
-add_action( 'init', 'register_post_types' );
+require_once get_template_directory() . '/inc/custom_post_type.php';
 
 /**
  * Add Welcome message to dashboard
@@ -301,97 +301,7 @@ if ( ! class_exists( 'wp_bootstrap_navwalker' )) {
     require_once(get_template_directory() . '/inc/wp_bootstrap_navwalker.php');
 }
 
-/// Ничего лишнего удалять не буду из темы, весь мой написанный код будет ниже
+// Кастомные поля закинул в файл custom_post_type.php в папке inc
+// Подключение carbon field закинул в carbon-field.php в папке inc
 
-//require __DIR__ . 'inc/carbon-fields.php';
-
-
-function register_post_types(){
-    register_post_type( 'news', [
-        'label'  => null,
-        'labels' => [
-            'name'               => 'Новости',
-            'singular_name'      => 'Новость',
-            'add_new'            => 'Добавить новость',
-            'add_new_item'       => 'Добавление новости',
-            'edit_item'          => 'Редактирование новости',
-            'new_item'           => 'Новая новость',
-            'view_item'          => 'Смотреть новости',
-            'search_items'       => 'Искать новость',
-            'not_found'          => 'Не найдено', //
-            'not_found_in_trash' => 'Не найдено в корзине',
-            'parent_item_colon'  => '',
-            'menu_name'          => 'Новости',
-        ],
-        'description'         => '',
-        'public'              => true,
-        'hierarchical'        => false,
-        'supports'            => [],
-        'taxonomies'          => [],
-        'has_archive'         => false,
-        'rewrite'             => true,
-        'query_var'           => true,
-    ] );
-    register_post_type( 'products', [
-        'label'  => null,
-        'labels' => [
-            'name'               => 'Продукты',
-            'singular_name'      => 'Продукт',
-            'add_new'            => 'Добавить продукт',
-            'add_new_item'       => 'Добавление продукта',
-            'edit_item'          => 'Редактирование продукта',
-            'new_item'           => 'Новый продукт',
-            'view_item'          => 'Смотреть продукты',
-            'search_items'       => 'Искать продукты',
-            'not_found'          => 'Не найдено', //
-            'not_found_in_trash' => 'Не найдено в корзине',
-            'parent_item_colon'  => '',
-            'menu_name'          => 'Продукты',
-        ],
-        'description'         => '',
-        'public'              => true,
-        'hierarchical'        => false,
-        'supports'            => [],
-        'taxonomies'          => [],
-        'has_archive'         => false,
-        'rewrite'             => true,
-        'query_var'           => true,
-    ] );
-}
-
-use Carbon_Fields\Container;
-use Carbon_Fields\Field;
-
-add_action( 'carbon_fields_register_fields', 'test_carbon' );
-function test_carbon() {
-
-    Container::make( 'post_meta', 'Настройки новости' )
-        ->where( 'post_type', '=', 'news' )
-        ->add_fields( array(
-
-            Field::make( 'text', 'title_news', 'Заголовок новости' ),
-            Field::make('textarea', 'textarea_news', 'Текст новости'),
-            Field::make( 'image', 'img_news', 'Фоновое изображение' ),
-            Field::make('date', 'date_news', 'Дата новости'),
-        ) );
-
-    Container::make( 'post_meta', 'Настройки продукта' )
-        ->where( 'post_type', '=', 'products' )
-        ->add_fields( array(
-
-            Field::make( 'text', 'title_product', 'Название продукта' ),
-            Field::make('textarea', 'textarea_product', 'Описание продукта'),
-            Field::make( 'complex', 'img_slider_product', 'Слайдер изоборажений' )
-                ->add_fields( array(
-                    Field::make('image', 'img', 'Изображение 1'),
-                )),
-            Field::make('text', 'comp_product', 'Комплектация продукта'),
-            Field::make('select', 'select_product', 'Производитель продукта')
-                ->set_options (array(
-                    'apple' => 'Apple',
-                    'google'=> 'Google',
-                    'xiaomi'=> 'Xiaomi',
-                )),
-            Field::make('text', 'price_product', 'Цена продукта')
-        ) );
-}
+require_once get_template_directory( ) . '/inc/carbon-field.php';

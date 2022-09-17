@@ -2,6 +2,7 @@
 /**
  * The main template file
  *
+ * Template Name: Index
  * This is the most generic template file in a WordPress theme
  * and one of the two required files for a theme (the other being style.css).
  * It is used to display a page when nothing more specific matches a query.
@@ -12,43 +13,49 @@
  * @package WP_Bootstrap_Starter
  */
 
-get_header(); ?>
+get_header(); 
+$args_news = array(
+	'posts_per_page' => 3,
+	'post_type' => 'news',
+	'order'    => 'date',
+	'orderby'  => 'ABC',
+);
+$args_prod = array(
+	'posts_per_page' => 3,
+	'post_type' => 'products',
+	'orderby'  => 'ABC',
+);
 
+$query_news = new WP_Query( $args_news );
+$query_products = new WP_Query( $args_prod );
+
+?>
 	<section id="primary" class="content-area col-sm-12 col-md-12 col-lg-8">
 		<div id="main" class="site-main" role="main">
-
-		<?php
-		if ( have_posts() ) :
-
-			if ( is_home() && ! is_front_page() ) : ?>
-				<header>
-					<h1 class="page-title screen-reader-text"><?php single_post_title(); ?></h1>
-				</header>
-
-			<?php
-			endif;
-
-			/* Start the Loop */
-			while ( have_posts() ) : the_post();
-
-				/*
-				 * Include the Post-Format-specific template for the content.
-				 * If you want to override this in a child theme, then include a file
-				 * called content-___.php (where ___ is the Post Format name) and that will be used instead.
-				 */
-				get_template_part( 'template-parts/content', get_post_format() );
-
-			endwhile;
-
-			the_posts_navigation();
-
-		else :
-
-			get_template_part( 'template-parts/content', 'none' );
-
-		endif; ?>
-
+			<?php if ( $query_news->have_posts() ) {
+				while ( $query_news->have_posts() ) {
+						$query_news->the_post();
+						get_template_part( 'template-parts/content', 'news' );
+				}
+			}
+			else {
+					echo "Новости отсутствуют";
+			}
+			wp_reset_postdata( );?>
 		</div><!-- #main -->
+		<h2>Блок с продуктами</h2>
+		<div class="col-md-12 col-lg-8 col-sm-12">
+			<?php if ( $query_products->have_posts() ) {
+					while ( $query_products->have_posts() ) {
+							$query_products->the_post();
+							get_template_part( 'template-parts/content', 'product' );
+					}
+				}
+				else {
+						echo "Новости отсутствуют";
+				}?>
+
+		</div>
 	</section><!-- #primary -->
 
 <?php
